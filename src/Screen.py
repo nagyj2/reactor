@@ -3,7 +3,8 @@ import pyglet
 
 from Atom import Atom
 from ControlRod import ControlRod
-from Emitter import get_per_frame_chance
+from Emitter import TestEmitter, get_per_frame_chance
+from GraphicalEntity import PointEntity
 from Moveable import Moveable
 from Neutron import Neutron
 from Physics import GlobalPhysics as Physics
@@ -61,6 +62,7 @@ class Game:
         ]
         self.new_entities = []
         self.cur_entities = [
+            # TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 3, 3, self.new_entities),
             Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
             Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(10, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
             ControlRod(150, 50, 10, Settings.HEIGHT-150, 10, 0, Settings.WIDTH, 0, Settings.HEIGHT, self.window),
@@ -95,13 +97,14 @@ class Game:
                             e1.vel.x *= -1
 
             # Static Events
-            if type(e1) is Neutron \
+            if type(e1) is PointEntity \
                     and (e1.pos.x > self.MAX_X
                          or e1.pos.x < self.MIN_X
                          or e1.pos.y > self.MAX_Y
                          or e1.pos.y < self.MIN_Y):
                 e1.alive = False
 
+            if type(e1) is PointEntity and not e1.alive:
                 e1.image.color = (255, 0, 0)
 
         Physics.update_sectors(Physics.get_registered_entities())
