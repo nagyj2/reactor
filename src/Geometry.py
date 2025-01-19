@@ -35,6 +35,10 @@ class Point:
     def from_origin(vector):
         return Point(vector.x, vector.y)
 
+    @staticmethod
+    def from_coordinates(x_y):
+        return Point(x_y[0], x_y[1])
+
     def __init__(self, x, y):
         self.x = x
         self.y = y

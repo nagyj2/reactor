@@ -200,3 +200,9 @@ def test_point_coordinates_set(x1, y1, x2, y2):
 def test_point_from_origin(x1, y1, x2, y2):
     assert Point.from_origin(Vector(x1, y1)) == Point(x1, y1)
     assert Point.from_origin(Vector(x2, y2)) == Point(x2, y2)
+
+
+@pytest.mark.parametrize('x1,y1,x2,y2', params_coord_math_auto_verify)
+def test_point_from_coordinates(x1, y1, x2, y2):
+    assert Point.from_coordinates((x1, y1)) == Point(x1, y1)
+    assert Point.from_coordinates((x2, y2)) == Point(x2, y2)
