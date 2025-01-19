@@ -461,16 +461,22 @@ def test_vector_from_origin(x1, y1, x2, y2):
 
 
 def test_vector_unit_horizontal():
-    assert False
+    assert Vector.unit_horizontal() == Vector(1, 0)
 
 
 def test_vector_unit_vertical():
-    assert False
+    assert Vector.unit_vertical() == Vector(0, 1)
 
 
 def test_vector_unit_diagonal():
-    assert False
+    assert Vector.unit_diagonal() == Vector(1/math.sqrt(2), 1/math.sqrt(2))
 
 
-def test_vector_degrees_between():
-    assert False
+@pytest.mark.parametrize('v1,v2,w1,w2', [
+    (1, 1, 0, 1),
+    (0, 1, 0, -1),
+    (-1, 0, 1, 0),
+    (1, 1, 1, 1),
+])
+def test_vector_degrees_between(v1, v2, w1, w2):
+    assert Vector(v1, v2).angle_between(Vector(w1, w2)) - math.degrees(math.atan2(w2*v1 - w1*v2, w1*v1 + w2*v2)) < EPSILON  # noqa: E501

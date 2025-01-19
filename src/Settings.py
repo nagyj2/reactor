@@ -21,6 +21,10 @@ class Settings(object):
         self.TITLE = "RBMK Reactor Simulation"
         self.entity_id = 0  # provided to all Entities and incremented
 
+    def next_id(self):
+        self.entity_id += 1
+        return self.entity_id - 1
+
 
 GlobalSettings = Settings()
 

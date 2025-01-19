@@ -4,12 +4,15 @@ import pyglet
 import pytest
 
 from Geometry import Vector
+from Settings import init_settings
 from Shapes import (Circle, Layer, Rectangle, Shape, shape_back,
                     shape_background, shape_foreground, shape_front,
                     shape_midground)
 
 # todo:
 # add parameterization
+
+init_settings(default=True)
 
 
 def create_pyglet_shape_sample(x, y, color):

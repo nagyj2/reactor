@@ -3,6 +3,9 @@ from copy import copy, deepcopy
 import pytest
 
 from Entity import Entity
+from Settings import init_settings
+
+init_settings(default=True)
 
 
 class TestEntity(Entity):  # test class to be copyable, comparable and contains state
@@ -14,9 +17,6 @@ class TestEntity(Entity):  # test class to be copyable, comparable and contains 
         if isinstance(other, TestEntity):
             return self.state == other.state
         return False
-
-    def __deepcopy__(self, memo):
-        return TestEntity(self.state)
 
     def update(self, dt):
         self.state += dt
@@ -51,7 +51,7 @@ def test_entity_add(r1):
     assert e1.repr == []
     c = 0
     for e in r1:
-        e1.add(deepcopy(e))
+        e1.add(e)
         c += 1
         assert e in e1.repr
         assert len(e1.repr) == c
@@ -61,7 +61,7 @@ def test_entity_add(r1):
 def test_entity_remove(r1):
     e1 = Entity()
     assert e1.repr == []
-    e1.repr = [deepcopy(e) for e in r1]
+    e1.repr = [e for e in r1]
     c = len(r1)
     for e in r1:
         e1.remove(e)
@@ -83,41 +83,40 @@ def test_entity_remove_all():
 @pytest.mark.parametrize('r1', params_entity_copyable_repr)
 def test_entity_has(r1):
     e1 = Entity()
-    e1.repr = deepcopy(r1)
+    e1.repr = r1
     for e in r1:
         assert e1.has(type(e))
 
 
 def test_entity_empty_eq():
-    assert Entity() == Entity()
+    e = Entity()
+    assert e == e
 
 
 @pytest.mark.parametrize('r1,r2', params_entity_manual_identical_repr)
 def test_entity_junk_eq(r1, r2):
     e1 = Entity()
-    e2 = Entity()
     e1.repr = r1
-    e2.repr = r2
-    assert e1 == e2
+    assert e1 == e1
 
 
 def test_entity_empty_ne():
-    assert not (Entity() != Entity())
-
-
-@pytest.mark.parametrize('r1,r2', [
-    ((2, '3', 2.0), ((2, '4', 2.0,))),
-    ((2, '3', 2.0), ((2, '3', 2.0, 1))),
-    ((Entity(),), (Entity(), object())),
-    ((TestEntity(1),), (TestEntity(5))),
-    ((object(),), (object(),)),
-])
-def test_entity_junk_ne(r1, r2):
     e1 = Entity()
     e2 = Entity()
-    rep = [2, '3', 2.0, object()]
-    e1.repr = rep
-    e2.repr = rep + [4,]
+    assert e1 != e2
+
+
+@pytest.mark.parametrize('r1', [
+    ((2, '3', 2.0)),
+    ((2, '3', 2.0)),
+    ((Entity(),)),
+    ((TestEntity(1),)),
+])
+def test_entity_junk_ne(r1):
+    e1 = Entity()
+    e2 = Entity()
+    e1.repr = r1
+    e2.repr = r1
     assert e1 != e2
 
     e2 = Entity()
@@ -130,25 +129,42 @@ def test_entity_junk_ne(r1, r2):
 def test_entity_copy(r1):
     e1 = Entity()
     e2 = copy(e1)
-    assert e1 == e2
+    for e in e1.repr:
+        assert type(e) in e2.repr
+    for e in e2.repr:
+        assert type(e) in e1.repr
 
-    e1.repr += r1
-    assert e1 == e2  # alias repr from copy
+    e1.repr.extend(r1)  # repr is aliased
+    for e in e1.repr:
+        assert type(e) in e2.repr
+    for e in e2.repr:
+        assert type(e) in e1.repr
 
 
 @pytest.mark.parametrize('r1', params_entity_copyable_repr)
 def test_entity_deepcopy(r1):
     e1 = Entity()
     e2 = deepcopy(e1)
-    assert e1 == e2
+    assert e1 != e2
 
-    e1.repr += r1
-    assert e1 != e2  # make fresh repr from deepcopy
+
+@pytest.mark.parametrize('r1', params_entity_copyable_repr)
+def test_entity_deepcopy_ne(r1):
+    e1 = Entity()
+    e2 = deepcopy(e1)
+    for e in e1.repr:
+        assert type(e) in e2.repr
+    for e in e2.repr:
+        assert type(e) in e1.repr
+
+    e1.repr.extend(r1)  # repr is aliased
+    assert r1 not in e2.repr
 
 
 def test_entity_update():
     e1 = Entity()
     e2 = Entity()
+    e2.id = e1.id
     e1.update(1)
     assert e1 == e2
 
@@ -156,6 +172,7 @@ def test_entity_update():
 def test_entity_prepare():
     e1 = Entity()
     e2 = Entity()
+    e2.id = e1.id
     e1.prepare()
     assert e1 == e2
 
@@ -164,11 +181,9 @@ def test_entity_enable():
     e = Entity()
     e.repr = [TestEntity()]
     e_copy = deepcopy(e)
+    e_copy.id = e.id
     assert e == e_copy
 
     e.enable = False
     e.update(5)
     assert e == e_copy
-    e.enable = True
-    e.update(5)
-    assert e != e_copy

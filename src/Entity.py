@@ -23,8 +23,7 @@ class Entity:
         self.repr = []
         self.enable = True
         self.alive = True
-        self.id = Settings.entity_id
-        Settings.entity_id += 1
+        self.id = Settings.next_id()
 
     def __repr__(self):
         return f'{type(self).__name__}(id={self.id})'
@@ -32,24 +31,16 @@ class Entity:
     def __str__(self):
         return f'{type(self).__name__}()'
 
-    # def __eq__(self, other):
-    #     if isinstance(other, Entity):
-    #         if len(self.repr) != len(other.repr):
-    #             return False
-    #         for my_obj in self.repr:
-    #             found = False
-    #             for their_obj in other.repr:
-    #                 if my_obj == their_obj:
-    #                     found = True
-    #             if not found:
-    #                 return False
-    #         return True
-    #     return False
+    def __eq__(self, other):
+        if isinstance(other, Entity):
+            return self.id == other.id
+        return False
 
     def __copy__(self):
         cls = self.__class__
         result = cls.__new__(cls)
         result.__dict__.update(self.__dict__)
+        # result.id = Settings.next_id()
         return result
 
     def __deepcopy__(self, memo):
@@ -58,6 +49,7 @@ class Entity:
         memo[id(self)] = result
         for k, v in self.__dict__.items():
             setattr(result, k, deepcopy(v, memo))
+        result.id = Settings.next_id()
         return result
 
     # @abc.abstractmethod  # require this function to be overwritten
