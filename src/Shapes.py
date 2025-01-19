@@ -8,6 +8,7 @@ from Geometry import Coordinate, Vector
 
 # todo:
 # on __del__, remove from batch
+# instea dof storing colour at each instance, use properties to bypass layers
 
 shape_batch = pyglet.graphics.Batch()
 
@@ -37,7 +38,7 @@ def draw_primitives():
     shape_batch.draw()
 
 
-class Layer(enum.Enum):
+class Layer(enum.IntEnum):
     FRONT = 0
     FOREGROUND = 1
     MIDGROUND = 2
@@ -106,6 +107,10 @@ class Shape:
                 self.primitive.group = shape_back
             case _:
                 raise ValueError(f'Unexpected layer, {layer}')
+
+    @property
+    def layer(self):
+        return self.primitive.group
 
 
 class Circle(Shape):

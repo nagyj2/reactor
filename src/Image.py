@@ -7,6 +7,9 @@ from Shapes import Circle, Rectangle
 # implement deepcopy
 # change Image to be a graphical entity and then simple/complex shapes
 #   come from it??
+# improve API
+#   pipe values up and down stack using properties
+# add guards
 
 
 class Image(Entity):
@@ -20,7 +23,7 @@ class Image(Entity):
         return self._named_shapes[name]
 
     def __setitem__(self, name, shape):
-        shape.base = self
+        assert shape is not None
         self._named_shapes[name] = shape
 
     def __delitem__(self, name):
@@ -29,13 +32,15 @@ class Image(Entity):
     def __len__(self):
         return len(self._named_shapes)  # number of shapes
 
+    def __contains__(self, other):
+        return other in self.shapes
+
     @property
     def shapes(self):
-        return tuple(iter(self._named_shapes.values()))
+        return tuple(v for k, v in self._named_shapes.items())
 
     def draw(self):
         '''Display update contained shapes. DIFFERENT FROM ENTITY `draw()`!'''
-        self.basepos.coordinates = self.basepos.coordinates  # update self
         for name, shape in self._named_shapes.items():
             shape.primitive.position = self.basepos.coordinates  # update children to match self
 
@@ -63,7 +68,7 @@ class SimpleImage(Image):
 
     def __setitem__(self, name, shape):
         if name != self._base_name:
-            raise AttributeError(f'{type(self).__name__} cannot assign additional shape \'{name}\'')
+            raise IndexError(f'{type(self).__name__} cannot assign additional shape \'{name}\'')
         return super().__setitem__(name, shape)
 
     def __delitem__(self, name):
