@@ -3,7 +3,6 @@ from copy import copy, deepcopy
 import pyglet
 import pytest
 
-from Geometry import Vector
 from Settings import init_settings
 from Shapes import (Circle, Layer, Rectangle, Shape, shape_back,
                     shape_background, shape_foreground, shape_front,
@@ -25,7 +24,7 @@ def create_pyglet_shape_sample(x, y, color):
 
 def create_shape_sample(ox, oy, color):
     primitive = create_pyglet_shape_sample(ox, oy, color)
-    return Shape(ox, oy, primitive, color)
+    return Shape(ox, oy, primitive)
 
 
 def validate_shape(shape, ex, ey, eox, eoy, ecolor):
@@ -126,38 +125,19 @@ def test_shape_deepcopy():
     assert s1 != s2
 
 
-def test_shape_draw():
-    ox, oy = 0, 0
-    color = (255, 128, 64, 255)
-    s1 = create_shape_sample(ox, oy, color)
-
-    s1.draw()  # properties should be static
-    validate_shape(s1, ox, oy, ox, oy, color)
-
-    s1.offset += Vector(1, -1)
-    s1.color = (255, 255, 255, 22)
-    s1.draw()  # see if properties update
-    validate_shape(s1, ox+1, oy-1, ox+1, oy-1, (255, 255, 255, 22))
-
-    # 2 back-to-back draw() calls will not happen without x,y being reset by Image
-    # results in constant offset but different primitive position
-    s1.draw()
-    validate_shape(s1, ox+2, oy-2, ox+1, oy-1, (255, 255, 255, 22))
-
-
 def test_shape_layer():
     ox, oy = 0, 0
     color = (255, 128, 64, 255)
     s1 = create_shape_sample(ox, oy, color)
-    s1.set_layer(Layer.FRONT)
+    s1.layer = Layer.FRONT
     assert s1.primitive.group == shape_front
-    s1.set_layer(Layer.FOREGROUND)
+    s1.layer = Layer.FOREGROUND
     assert s1.primitive.group == shape_foreground
-    s1.set_layer(Layer.MIDGROUND)
+    s1.layer = Layer.MIDGROUND
     assert s1.primitive.group == shape_midground
-    s1.set_layer(Layer.BACKGROUND)
+    s1.layer = Layer.BACKGROUND
     assert s1.primitive.group == shape_background
-    s1.set_layer(Layer.BACK)
+    s1.layer = Layer.BACK
     assert s1.primitive.group == shape_back
 
 
@@ -273,41 +253,20 @@ def test_circle_deepcopy():
     assert c1 != c2
 
 
-def test_circle_draw():
-    ox, oy = 0, 0
-    color = (255, 128, 64, 255)
-    radius = 10
-    c1 = Circle(ox, oy, color, radius)
-
-    c1.draw()  # properties should be static
-    validate_circle(c1, ox, oy, ox, oy, color, radius)
-
-    c1.offset += Vector(1, -1)
-    c1.color = (255, 255, 255, 22)
-    c1.radius = 7
-    c1.draw()  # see if properties update
-    validate_circle(c1, ox+1, oy-1, ox+1, oy-1, (255, 255, 255, 22), 7)
-
-    # 2 back-to-back draw() calls will not happen without x,y being reset by Image
-    # results in constant offset but different primitive position
-    c1.draw()
-    validate_circle(c1, ox+2, oy-2, ox+1, oy-1, (255, 255, 255, 22), 7)
-
-
 def test_circle_layer():
     ox, oy = 0, 0
     color = (255, 128, 64, 255)
     radius = 10
     c1 = Circle(ox, oy, color, radius)
-    c1.set_layer(Layer.FRONT)
+    c1.layer = Layer.FRONT
     assert c1.primitive.group == shape_front
-    c1.set_layer(Layer.FOREGROUND)
+    c1.layer = Layer.FOREGROUND
     assert c1.primitive.group == shape_foreground
-    c1.set_layer(Layer.MIDGROUND)
+    c1.layer = Layer.MIDGROUND
     assert c1.primitive.group == shape_midground
-    c1.set_layer(Layer.BACKGROUND)
+    c1.layer = Layer.BACKGROUND
     assert c1.primitive.group == shape_background
-    c1.set_layer(Layer.BACK)
+    c1.layer = Layer.BACK
     assert c1.primitive.group == shape_back
 
 
@@ -437,40 +396,18 @@ def test_rectangle_deepcopy():
     assert r1 != r2
 
 
-def test_rectangle_draw():
-    ox, oy = 0, 0
-    color = (255, 128, 64, 255)
-    w, h = 5, -2
-    r1 = Rectangle(ox, oy, color, w, h)
-
-    r1.draw()  # properties should be static
-    validate_rectangle(r1, ox, oy, ox, oy, color, w, h)
-
-    r1.offset += Vector(1, -1)
-    r1.color = (255, 255, 255, 22)
-    r1.width = -2.5
-    r1.height = 2.35
-    r1.draw()  # see if properties update
-    validate_rectangle(r1, ox+1, oy-1, ox+1, oy-1, (255, 255, 255, 22), -2.5, 2.35)
-
-    # 2 back-to-back draw() calls will not happen without x,y being reset by Image
-    # results in constant offset but different primitive position
-    r1.draw()
-    validate_rectangle(r1, ox+2, oy-2, ox+1, oy-1, (255, 255, 255, 22), -2.5, 2.35)
-
-
 def test_rectangle_layer():
     ox, oy = 0, 0
     color = (255, 128, 64, 255)
     radius = 10
     r1 = Circle(ox, oy, color, radius)
-    r1.set_layer(Layer.FRONT)
+    r1.layer = Layer.FRONT
     assert r1.primitive.group == shape_front
-    r1.set_layer(Layer.FOREGROUND)
+    r1.layer = Layer.FOREGROUND
     assert r1.primitive.group == shape_foreground
-    r1.set_layer(Layer.MIDGROUND)
+    r1.layer = Layer.MIDGROUND
     assert r1.primitive.group == shape_midground
-    r1.set_layer(Layer.BACKGROUND)
+    r1.layer = Layer.BACKGROUND
     assert r1.primitive.group == shape_background
-    r1.set_layer(Layer.BACK)
+    r1.layer = Layer.BACK
     assert r1.primitive.group == shape_back

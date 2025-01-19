@@ -2,11 +2,11 @@ from copy import deepcopy
 
 import pytest
 
-from Geometry import Point, Vector
-from Image import (CircleImage, ComplexImage, Image, PointImage,
-                   RectangleImage, SimpleImage)
+from ComplexImage import ComplexImage
+from Image import Image
 from Settings import init_settings
 from Shapes import Circle, Layer, Rectangle
+from SimpleImage import CircleImage, RectangleImage, SimpleImage
 
 # todo:
 
@@ -29,18 +29,19 @@ def init_shape(shape):
 
 def test_image_creation():
     i = Image(0, 0)
-    assert i.basepos == Point(0, 0)
     assert len(i.shapes) == 0
 
 
 @pytest.mark.parametrize('shape_class', params_shapes)
 def test_image_set_get_del(shape_class):
     s1 = init_shape(shape_class)
-    i = Image(0, 0)
+    x, y = 1, 1
+    i = Image(x, y)
     i['shape'] = s1
     assert len(i.shapes) == 1
     assert s1 in i
     assert i['shape'] == s1
+    assert i['shape'].pos == s1.pos
     del i['shape']
     assert len(i.shapes) == 0
 
@@ -83,24 +84,10 @@ def test_image_set_layer(shape_class):
 
 
 @pytest.mark.parametrize('shape_class', params_shapes)
-def test_image_draw(shape_class):
-    shape1 = init_shape(shape_class)
-    i = Image(0, 0)
-    i['shape1'] = shape1
-    assert i.basepos.coordinates == shape1.primitive.position
-
-    dx, dy = 1, 1
-    i.basepos += Vector(dx, dy)
-    i.draw()
-    assert i.basepos.coordinates == shape1.primitive.position
-
-
-@pytest.mark.parametrize('shape_class', params_shapes)
 def test_simpleimage_creation(shape_class):
     shape = init_shape(shape_class)
     x, y = 0, 0
     i = SimpleImage(x, y, shape)
-    assert i.basepos.coordinates == (x, y)
     assert len(i.shapes) == 1
     assert i.color == shape.color
 
@@ -143,21 +130,11 @@ def test_simpleimage_set_get_color(shape_class):
         assert i['base'].primitive.color == color
 
 
-def test_pointimage_set_get_radius():
-    i = PointImage(0, 0, (255, 255, 255), 5)
-
-    for radius in (-10, 0, 10):
-        i.radius = radius
-        i.draw()  # fix to not need - pipe call
-        assert i.radius == radius == i['base'].primitive.radius
-
-
 def test_circleimage_set_get_radius():
     i = CircleImage(0, 0, (255, 255, 255), 5)
 
     for radius in (-10, 0, 10):
         i.radius = radius
-        i.draw()  # fix to not need - pipe call
         assert i.radius == radius == i['base'].primitive.radius
 
 
@@ -166,12 +143,10 @@ def test_rectangleimage_set_get_radius():
 
     for w, h in ((-10, 10), (0, 5), (10, 0)):
         i.width, i.height = w, h
-        i.draw()  # fix to not need - pipe call
         assert i.width == w == i['base'].primitive.width
         assert i.height == h == i['base'].primitive.height
 
 
 def test_compleximage_creation():
     i = ComplexImage(0, 0)
-    assert i.basepos == Point(0, 0)
     assert len(i.shapes) == 0

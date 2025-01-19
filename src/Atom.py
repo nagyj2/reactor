@@ -1,7 +1,7 @@
 
 from Emitter import Radioactivity
-from GraphicalEntity import CircleEntity
 from Shapes import Layer
+from SimpleGraphicalEntity import CircleEntity
 
 # todo:
 # radioactivity
@@ -16,4 +16,4 @@ class Atom(CircleEntity):
         self.radioactivity = Radioactivity(self.pos, emit_particle, emit_num, 100, entity_space, emit_chance)
         self.repr.append(self.radioactivity)
 
-        self.image.set_layer(Layer.MIDGROUND)
+        self.image.layer = Layer.MIDGROUND

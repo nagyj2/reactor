@@ -90,13 +90,13 @@ if __name__ == '__main__':
                         or e.pos.y > MAX_Y \
                         or e.pos.y < MIN_Y:
 
-                    e.image.color = (255, 0, 0)
+                    e.color = (255, 0, 0)
                     e.alive = False
 
             # Update water's colour dpending on how much stuff is in it
             if e in w:
                 iw += 1
-        w.image.color = (*map(lambda c: c - c * (iw//len(entities)), (0, 0, 255)), 255)
+        w.color = (*map(lambda c: c - c * (iw//len(entities)), (0, 0, 255)), 255)
 
         # UPDATE POSITIONS
         for e in entities:

@@ -4,7 +4,7 @@ from copy import deepcopy
 
 import pyglet
 
-from Geometry import Coordinate, Vector
+from Geometry import Point, Vector
 
 # todo:
 # on __del__, remove from batch
@@ -18,10 +18,8 @@ shape_midground = pyglet.graphics.Group(order=2)
 shape_background = pyglet.graphics.Group(order=3)
 shape_back = pyglet.graphics.Group(order=4)  # first to draw (bottom)
 
-RED = (255, 0, 0)
-
 # Mapping private attributes to public arguments in pyglet shapes
-# Used for deepcopy. Only includes elements I am worried about
+# Used for deepcopy. Only includes used elements
 _priv_to_pub_pyglet_shape_mapping = {
     '_x': 'x',
     '_y': 'y',
@@ -47,22 +45,20 @@ class Layer(enum.IntEnum):
 
 
 class Shape:
-    def __init__(self, ox, oy, primitive, color):
-        self.offset = Vector(ox, oy)
+    def __init__(self, ox, oy, primitive):
+        self._offset = Vector(ox, oy)
         self.primitive = primitive
-        self.color = color
 
     def __iter__(self):
         return self.primitive  # return to use pyglet 2.0.8's `in` integration
 
     def __eq__(self, other):
         if isinstance(other, Shape):
-            return self.offset == other.offset \
+            return self.__class__ == other.__class__ \
+                and self.offset == other.offset \
+                and self.pos == other.pos \
                 and self.color == other.color \
-                and self.primitive.__class__ == other.primitive.__class__ \
-                and self.primitive.position == other.primitive.position \
-                and self.primitive.color == other.primitive.color \
-                and self.primitive.group == other.primitive.group
+                and self.layer == other.layer
         return False
 
     def __copy__(self):
@@ -85,15 +81,48 @@ class Shape:
                 setattr(result, k, deepcopy(v, memo))
         return result
 
-    def _draw(self):  # DIFFERENT FROM ENTITY `draw()`!
-        self.primitive.x += self.offset.x  # apply offset
-        self.primitive.y += self.offset.y
-        self.primitive.color = self.color
+    @property
+    def color(self):
+        return self.primitive.color
 
-    def draw(self):  # follow same structure as Entity but it is NOT THEIR `draw()`!
-        self._draw()
+    @color.setter
+    def color(self, color):
+        if len(color) == 3:  # add opacity if missing
+            color = color + (255,)
+        self.primitive.color = color
 
-    def set_layer(self, layer):
+    def move_to(self, new_basepos):
+        self.primitive.position = (new_basepos + self.offset).coordinates
+
+    @property
+    def pos(self):
+        return Point.from_coordinates(self.primitive.position)
+
+    @property
+    def offset(self):
+        return self._offset
+
+    @offset.setter
+    def offset(self, new_offset):
+        self.primitive.position = ((self.pos - self._offset) + new_offset).coordinates
+        self._offset = new_offset
+
+    @property
+    def layer(self):
+        match self.primitive.group.order:
+            case 0:
+                return Layer.FRONT
+            case 1:
+                return Layer.FOREGROUND
+            case 2:
+                return Layer.MIDGROUND
+            case 3:
+                return Layer.BACKGROUND
+            case 4:
+                return Layer.BACK
+
+    @layer.setter
+    def layer(self, layer):
         match layer:
             case Layer.FRONT:
                 self.primitive.group = shape_front
@@ -108,14 +137,8 @@ class Shape:
             case _:
                 raise ValueError(f'Unexpected layer, {layer}')
 
-    @property
-    def layer(self):
-        return self.primitive.group
-
 
 class Circle(Shape):
-    radius = Coordinate()
-
     def __init__(self, ox, oy, color, radius):
         shape = pyglet.shapes.Circle(x=ox,
                                      y=oy,
@@ -123,27 +146,24 @@ class Circle(Shape):
                                      color=color,
                                      batch=shape_batch,
                                      group=shape_background)
-        super().__init__(ox, oy, shape, color)
+        super().__init__(ox, oy, shape)
 
-        self.radius = radius
+    @property
+    def radius(self):
+        return self.primitive.radius
+
+    @radius.setter
+    def radius(self, radius):
+        self.primitive.radius = radius
 
     def __eq__(self, other):
         if isinstance(other, Circle):
             return super().__eq__(other) \
-                and self.radius == other.radius \
-                and self.primitive.radius == other.primitive.radius
+                and self.radius == other.radius
         return False
-
-    def _draw(self):  # DIFFERENT FROM ENTITY `draw()`!
-        super()._draw()
-
-        self.primitive.radius = self.radius
 
 
 class Rectangle(Shape):
-    width = Coordinate()
-    height = Coordinate()
-
     def __init__(self, ox, oy, color, width, height):
         shape = pyglet.shapes.Rectangle(x=ox,
                                         y=oy,
@@ -152,22 +172,66 @@ class Rectangle(Shape):
                                         color=color,
                                         batch=shape_batch,
                                         group=shape_background)
-        super().__init__(ox, oy, shape, color)
-
-        self.width = width
-        self.height = height
+        super().__init__(ox, oy, shape)
 
     def __eq__(self, other):
         if isinstance(other, Rectangle):
             return super().__eq__(other) \
                 and self.width == other.width \
-                and self.height == other.height \
-                and self.primitive.width == other.primitive.width \
-                and self.primitive.height == other.primitive.height
+                and self.height == other.height
         return False
 
-    def _draw(self):  # DIFFERENT FROM ENTITY `draw()`!
-        super()._draw()
+    def __repr__(self):
+        return f'{type(self).__name__}(x={self.pos.x}, y={self.pos.y}, w={self.width}, h={self.height})'
 
-        self.primitive.width = self.width
-        self.primitive.height = self.height
+    @property
+    def width(self):
+        return self.primitive.width
+
+    @width.setter
+    def width(self, width):
+        self.primitive.width = width
+
+    @property
+    def height(self):
+        return self.primitive.height
+
+    @height.setter
+    def height(self, height):
+        self.primitive.height = height
+
+    @property
+    def center(self):
+        return Point(self.pos.x + self.width/2, self.pos.y + self.height/2)
+
+    @property
+    def left_x(self):
+        return self.pos.x
+
+    @property
+    def right_x(self):
+        return self.pos.x + self.width
+
+    @property
+    def bottom_y(self):
+        return self.pos.y
+
+    @property
+    def top_y(self):
+        return self.pos.y + self.height
+
+    @property
+    def top_left(self):
+        return Point(self.left_x, self.top_y)
+
+    @property
+    def top_right(self):
+        return Point(self.right_x, self.top_y)
+
+    @property
+    def bottom_left(self):
+        return Point(self.left_x, self.bottom_y)
+
+    @property
+    def bottom_right(self):
+        return Point(self.right_x, self.bottom_y)

@@ -1,6 +1,6 @@
 
-from GraphicalEntity import PointEntity
 from Shapes import Layer
+from SimpleGraphicalEntity import PointEntity
 
 # todo:
 # add fast variant (rquires moderation to slow)
@@ -12,7 +12,7 @@ class Neutron(PointEntity):
     def __init__(self, x, y, dx, dy, radius):
         super().__init__(x, y, dx, dy, WHITE, radius)
 
-        self.image.set_layer(Layer.FOREGROUND)
+        self.image = Layer.FOREGROUND
 
     def __repr__(self):
         return f'{type(self).__name__}@{self.pos}'

@@ -6,6 +6,8 @@ config_filename = 'config'
 
 
 class Settings(object):
+    PHYSICS_DIVISIONS = 8
+
     def __new__(cls):  # make a singleton class
         if not hasattr(cls, 'instance'):
             cls.instance = super(Settings, cls).__new__(cls)

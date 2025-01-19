@@ -129,6 +129,10 @@ class Vector:
         return Vector(point.x, point.y)
 
     @staticmethod
+    def from_positions(point1, point2):
+        return Vector(point2.x - point1.x, point2.y - point1.y)
+
+    @staticmethod
     def unit_horizontal():
         return Vector(1, 0)
 

@@ -2,8 +2,8 @@
 from pyglet.window import key
 
 from Controller import Controller, KeyEvent, KeyMap
-from GraphicalEntity import RectangleEntity
 from Shapes import Layer
+from SimpleGraphicalEntity import RectangleEntity
 
 # Todo:
 # Better way to handle vel reset w/ controller
@@ -31,4 +31,4 @@ class ControlRod(RectangleEntity):
         self.controller = Controller(self, window, controlrod_controls(True, speed, minx, maxx, miny, maxy))
         self.repr.append(self.controller)
 
-        self.image.set_layer(Layer.MIDGROUND)
+        self.image.layer = Layer.MIDGROUND

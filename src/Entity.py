@@ -100,18 +100,10 @@ class Entity:
 
     def remove_all(self, typ):
         c_len = len(self.repr)
-        self.repr = list(filter(lambda e: type(e) is not typ, self.repr))
+        new_repr = list(filter(lambda e: type(e) is not typ, self.repr))
+        self.repr.clear()
+        self.repr.extend(new_repr)  # avoid assigning a new list to repr
         return len(self.repr) != c_len
-        # o_len = -1
-        # found = False
-        # while o_len != c_len:  # if 2 back to back runs are same length, no more typ in self.repr
-        #     o_len = c_len
-        #     for e in self.repr:
-        #         if type(e) is typ:
-        #             found = found or self.remove(e)
-        #             break
-        #     c_len = len(self.repr)
-        # return found
 
     def has(self, typ):
         for e in self.repr:
@@ -119,5 +111,5 @@ class Entity:
                 return True
         return False
 
-    def kill(self, dt=0):  # dt to allow pyuglet to schedule it
+    def kill(self, dt=0):  # dt to allow pyglet to schedule it
         self.alive = False

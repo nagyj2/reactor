@@ -3,16 +3,10 @@ import itertools
 import math
 
 from Geometry import Vector
-from Image import ComplexImage
 from Settings import GlobalSettings as Settings
-from Shapes import Layer, Rectangle
 
 # todo:
 # shapes can occupy multiple sectors
-
-
-DIVIDE_W = 8  # subdivisions of the screen for physics simulation
-DIVIDE_H = 8
 
 
 class PhysicsLib:
@@ -71,41 +65,25 @@ class PhysicsLib:
         return rect1.left_x < rect2.right_x and rect1.right_x > rect2.left_x and \
             rect1.bottom_y > rect2.top_y and rect1.top_y < rect2.bottom_y
 
-    @staticmethod
-    def create_grid():
-
-        assert DIVIDE_W > 0, 'There must be 1 or more physics sectors'
-        assert DIVIDE_H > 0, 'There must be 1 or more physics sectors'
-
-        thickness = 3
-        color = (32, 32, 32)
-        image = ComplexImage(0, 0)
-        for x in range(0, Settings.WIDTH, Settings.WIDTH // DIVIDE_W):
-            image[f'rect-x={x}'] = Rectangle(x - thickness/2, 0, color, thickness, Settings.HEIGHT)
-
-        for y in range(0, Settings.HEIGHT, Settings.HEIGHT // DIVIDE_H):
-            image[f'rect-y={y}'] = Rectangle(0, y - thickness/2, color, Settings.WIDTH, thickness)
-
-        image.set_layer(Layer.BACK)
-        return image
-
     def __new__(cls):  # make a singleton class
         if not hasattr(cls, 'instance'):
             cls.instance = super(PhysicsLib, cls).__new__(cls)
         return cls.instance
 
     # COLLISION DETECTION OPTIMIZATION (SECTORS)
-    _sectors = {(x, y): [] for x in range(DIVIDE_W) for y in range(DIVIDE_H)}  # sectors for physics objects
+    _sectors = {(x, y): [] for x in range(Settings.PHYSICS_DIVISIONS) for y in range(Settings.PHYSICS_DIVISIONS)}
     _sector_assignment = {}  # assignment of entity to its sector
 
     def _get_sector_coords(self, entity):
-        sector_w = entity.pos.x // (Settings.WIDTH // DIVIDE_W)
-        sector_h = entity.pos.y // (Settings.HEIGHT // DIVIDE_H)
-        return (min(max(sector_w, 0), DIVIDE_W-1), min(max(sector_h, 0), DIVIDE_H-1))
+        sector_w = entity.pos.x // (Settings.WIDTH // Settings.PHYSICS_DIVISIONS)
+        sector_h = entity.pos.y // (Settings.HEIGHT // Settings.PHYSICS_DIVISIONS)
+        return (min(max(sector_w, 0), Settings.PHYSICS_DIVISIONS-1),
+                min(max(sector_h, 0), Settings.PHYSICS_DIVISIONS-1))
 
     def _get_neighbor_sector_coords(self, entity):
         origin_sector = self._get_sector_coords(entity)
-        return tuple((min(max(origin_sector[0]+x, 0), DIVIDE_W-1), min(max(origin_sector[1]+y, 0), DIVIDE_H-1))
+        return tuple((min(max(origin_sector[0]+x, 0), Settings.PHYSICS_DIVISIONS-1),
+                      min(max(origin_sector[1]+y, 0), Settings.PHYSICS_DIVISIONS-1))
                      for x, y in itertools.product(range(-1, 2), range(-1, 2)))
 
     def add_to_sector(self, entity):

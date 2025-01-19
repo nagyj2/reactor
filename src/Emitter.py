@@ -4,9 +4,9 @@ from typing import Callable
 
 from Entity import Entity
 from Geometry import Vector
-from GraphicalEntity import PointEntity
 from Physics import GlobalPhysics as Physics
 from Shapes import Layer
+from SimpleGraphicalEntity import PointEntity
 
 # todo:
 # use __deepcopy__?
@@ -32,7 +32,7 @@ class Emitter(Entity):
             particle = PointEntity(self.origin.x, self.origin.y,
                                    self.particle.vel.x, self.particle.vel.y, (128, 128, 128), 3)
             particle.pos.coordinates = self.origin.coordinates
-            particle.image.set_layer(Layer.FOREGROUND)
+            particle.image.layer = Layer.FOREGROUND
             Physics.add_to_sector(particle)
 
             if callable(self.emit_vec):
@@ -62,18 +62,19 @@ class Radioactivity(Emissive):
 
 
 class TestEmitter(PointEntity):
-    def __init__(self, x, y, dx, dy, radius, emit_num, entity_space):
-        super().__init__(x, y, dx, dy, (255, 255, 0), radius, static=True)
+    def __init__(self, x, y, radius, emit_rate, emit_num, entity_space):
+        super().__init__(x, y, 0, 0, (255, 255, 0), radius, static=True)
         particle = PointEntity(x, y, 0, 0, (128, 128, 128), 3)
         self.emitter = Emitter(self.pos, particle, emit_num,
                                lambda: Vector.from_polar_degrees(100, random.random() * 360), entity_space)
         self.repr.append(self.emitter)
 
-        self.image.set_layer(Layer.MIDGROUND)
+        self.image.layer = Layer.MIDGROUND
         self.time_passed = 0
+        self.emit_rate = emit_rate
 
     def _update(self, dt):
         ot = self.time_passed
-        self.time_passed = (self.time_passed + dt) % 1
+        self.time_passed = (self.time_passed + dt) % self.emit_rate
         if self.time_passed < ot:
             self.emitter.emit()

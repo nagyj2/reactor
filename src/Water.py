@@ -1,6 +1,6 @@
 
-from GraphicalEntity import RectangleEntity
 from Shapes import Layer
+from SimpleGraphicalEntity import RectangleEntity
 
 # todo:
 # add moderator ability
@@ -13,4 +13,4 @@ class Water(RectangleEntity):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, 0, 0, BABY_BLUE, w, h, static=True)
 
-        self.image.set_layer(Layer.BACKGROUND)
+        self.image.layer = Layer.BACKGROUND

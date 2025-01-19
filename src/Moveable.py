@@ -1,7 +1,7 @@
 
 from Controller import BasicController
-from GraphicalEntity import CircleEntity
 from Shapes import Layer
+from SimpleGraphicalEntity import CircleEntity
 
 GREEN = (0, 255, 0, 128)
 
@@ -12,4 +12,4 @@ class Moveable(CircleEntity):
         self.controller = BasicController(self, speed, window, keymapping)
         self.repr.append(self.controller,)
 
-        self.image.set_layer(Layer.FRONT)
+        self.image.layer = Layer.FRONT
