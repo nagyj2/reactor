@@ -104,6 +104,8 @@ class Shape:
                 self.primitive.group = shape_background
             case Layer.BACK:
                 self.primitive.group = shape_back
+            case _:
+                raise ValueError(f'Unexpected layer, {layer}')
 
 
 class Circle(Shape):

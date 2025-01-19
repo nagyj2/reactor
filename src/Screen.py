@@ -56,6 +56,9 @@ class Game:
         # place water
         # place control rods
 
+        self.gui = [
+            Physics.create_grid()
+        ]
         self.new_entities = []
         self.cur_entities = [
             Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
@@ -109,6 +112,8 @@ class Game:
 
         # UPDATE VISUAL ELEMENTS
         for e in self.cur_entities:
+            e.draw()
+        for e in self.gui:
             e.draw()
 
         # PREPARE ELEMENTS

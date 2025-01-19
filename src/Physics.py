@@ -5,6 +5,7 @@ import math
 from Geometry import Vector
 from Image import ComplexImage
 from Settings import GlobalSettings as Settings
+from Shapes import Layer, Rectangle
 
 # todo:
 # shapes can occupy multiple sectors
@@ -70,6 +71,23 @@ class PhysicsLib:
         return rect1.left_x < rect2.right_x and rect1.right_x > rect2.left_x and \
             rect1.bottom_y > rect2.top_y and rect1.top_y < rect2.bottom_y
 
+    @staticmethod
+    def create_grid():
+
+        assert DIVIDE_W > 0, 'There must be 1 or more physics sectors'
+        assert DIVIDE_H > 0, 'There must be 1 or more physics sectors'
+
+        thickness = 3
+        color = (32, 32, 32)
+        image = ComplexImage(0, 0)
+        for x in range(0, Settings.WIDTH, Settings.WIDTH // DIVIDE_W):
+            image[f'rect-x={x}'] = Rectangle(x - thickness/2, 0, color, thickness, Settings.HEIGHT)
+
+        for y in range(0, Settings.HEIGHT, Settings.HEIGHT // DIVIDE_H):
+            image[f'rect-y={y}'] = Rectangle(0, y - thickness/2, color, Settings.WIDTH, thickness)
+
+        image.set_layer(Layer.BACK)
+        return image
 
     def __new__(cls):  # make a singleton class
         if not hasattr(cls, 'instance'):

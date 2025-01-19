@@ -41,6 +41,10 @@ class Image(Entity):
 
             shape.draw()  # perform children offsets
 
+    def set_layer(self, layer):
+        for shape in self.shapes:
+            shape.set_layer(layer)
+
 
 class SimpleImage(Image):
     '''Convinience class for images with 1 shape. Shortcuts several operations on Image.'''
@@ -77,11 +81,11 @@ class SimpleImage(Image):
 
     @property
     def color(self):
-        return self['base'].color
+        return self[self._base_name].color
 
     @color.setter
     def color(self, color):
-        self['base'].color = color
+        self[self._base_name].color = color
         self.draw()  # propegate changes
 
 

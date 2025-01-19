@@ -16,6 +16,8 @@ class Settings(object):
         self.HEIGHT = config.getint('screen', 'height')
         self.FPS = config.getint('screen', 'fps')
 
+        self.PHYSICS_GRID = config.getboolean('physics', 'grid')
+
         self.TITLE = "RBMK Reactor Simulation"
         self.entity_id = 0  # provided to all Entities and incremented
 

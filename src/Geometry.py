@@ -43,7 +43,7 @@ class Point:
         return f'{type(self).__name__}(x={self.x}, y={self.y})'
 
     def __str__(self):
-        return f'({self.x}, {self.y})'
+        return f'({round(self.x, 2)}, {round(self.y, 2)})'
 
     def __add__(self, other):
         if isinstance(other, Vector):
