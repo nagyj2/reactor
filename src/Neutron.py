@@ -1,6 +1,4 @@
 
-import pyglet
-
 from GraphicalEntity import PointEntity
 from Shapes import Layer
 
@@ -8,7 +6,6 @@ from Shapes import Layer
 # add fast variant (rquires moderation to slow)
 
 WHITE = (255, 255, 255, 255)
-LIFETIME = 10
 
 
 class Neutron(PointEntity):
@@ -16,7 +13,9 @@ class Neutron(PointEntity):
         super().__init__(x, y, dx, dy, WHITE, radius)
 
         self.image.set_layer(Layer.FOREGROUND)
-        pyglet.clock.schedule_once(self.kill, LIFETIME)
+
+    def __repr__(self):
+        return f'{type(self).__name__}@{self.pos}'
 
     # @static_update_function
     # def _draw(self):

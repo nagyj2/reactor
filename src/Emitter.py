@@ -5,11 +5,13 @@ from typing import Callable
 from Entity import Entity
 from Geometry import Vector
 from Neutron import Neutron
+from Physics import GlobalPhysics as Physics
+from Shapes import Layer
 
 # todo:
 # use __deepcopy__?
 # correct get_per_frame_chance
-# find way to prevent aliasing of pos when setting emitted particle's position?
+# make nicer way add physics to particles
 
 
 def get_per_frame_chance(chance_per_second, frames_per_second):
@@ -31,6 +33,9 @@ class Emitter(Entity):
             particle = Neutron(self.origin.x, self.origin.y, 1, 0, 2)
 
             particle.pos.coordinates = self.origin.coordinates
+            particle.image.set_layer(Layer.FOREGROUND)
+            Physics.add_to_sector(particle)
+
             if callable(self.emit_vec):
                 particle.vel = self.emit_vec()
             else:

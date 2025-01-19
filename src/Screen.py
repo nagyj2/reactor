@@ -59,7 +59,7 @@ class Game:
         self.new_entities = []
         self.cur_entities = [
             Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
-            Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(100, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
+            Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(10, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
             ControlRod(150, 50, 10, Settings.HEIGHT-150, 10, 0, Settings.WIDTH, 0, Settings.HEIGHT, self.window),
             Moveable(100, 200, self.DEFAULT_SPEED, 5, self.window, tuple())
         ]
@@ -97,9 +97,11 @@ class Game:
                          or e1.pos.x < self.MIN_X
                          or e1.pos.y > self.MAX_Y
                          or e1.pos.y < self.MIN_Y):
+                e1.alive = False
 
                 e1.image.color = (255, 0, 0)
-                e1.alive = False
+
+        Physics.update_sectors(Physics.get_registered_entities())
 
         # UPDATE VISUAL POSITIONS
         for e in self.cur_entities:

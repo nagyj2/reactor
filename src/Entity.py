@@ -2,10 +2,14 @@
 # import abc
 from copy import deepcopy
 
+from Settings import GlobalSettings as Settings
+
 # Todo:
 # add entity disable and corresponding toggle
 # optimize __eq__?
 # implement __del__
+# cannot check for repr equality after modifying repr
+#   repr is free to copy itself on modifications
 
 
 class Entity:
@@ -19,23 +23,28 @@ class Entity:
         self.repr = []
         self.enable = True
         self.alive = True
+        self.id = Settings.entity_id
+        Settings.entity_id += 1
+
+    def __repr__(self):
+        return f'{type(self).__name__}(id={self.id})'
 
     def __str__(self):
         return f'{type(self).__name__}()'
 
-    def __eq__(self, other):
-        if isinstance(other, Entity):
-            if len(self.repr) != len(other.repr):
-                return False
-            for my_obj in self.repr:
-                found = False
-                for their_obj in other.repr:
-                    if my_obj == their_obj:
-                        found = True
-                if not found:
-                    return False
-            return True
-        return False
+    # def __eq__(self, other):
+    #     if isinstance(other, Entity):
+    #         if len(self.repr) != len(other.repr):
+    #             return False
+    #         for my_obj in self.repr:
+    #             found = False
+    #             for their_obj in other.repr:
+    #                 if my_obj == their_obj:
+    #                     found = True
+    #             if not found:
+    #                 return False
+    #         return True
+    #     return False
 
     def __copy__(self):
         cls = self.__class__

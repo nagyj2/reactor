@@ -8,6 +8,7 @@ from ControlRod import ControlRod
 from Emitter import get_per_frame_chance
 from Moveable import Moveable
 from Neutron import Neutron
+from Settings import init_settings
 from Shapes import draw_primitives
 from Water import Water
 
@@ -20,6 +21,7 @@ FPS = 60
 
 
 if __name__ == '__main__':
+    init_settings()
     window = pyglet.window.Window(width=WIDTH, height=HEIGHT, caption=TITLE)
 
     SPEED = 50
@@ -65,12 +67,13 @@ if __name__ == '__main__':
         elif n.pos.y < 0:
             n.pos.y = -n.vel.y * dt
             n.vel.y *= -1
-        if n in w:
-            n.pos -= n.vel * dt
-            if w.left_x < n.pos.x < w.right_x:  # if top/bottom or left/right reflection
-                n.vel.y *= -1
-            else:
-                n.vel.x *= -1
+        for o in (c, w):
+            if n in o:
+                n.pos -= n.vel * dt
+                if o.left_x < n.pos.x < o.right_x:  # if top/bottom or left/right reflection
+                    n.vel.y *= -1
+                else:
+                    n.vel.x *= -1
 
         # Check for entity events
         iw = 1  # entities in water (itself)
@@ -93,7 +96,6 @@ if __name__ == '__main__':
             # Update water's colour dpending on how much stuff is in it
             if e in w:
                 iw += 1
-
         w.image.color = (*map(lambda c: c - c * (iw//len(entities)), (0, 0, 255)), 255)
 
         # UPDATE POSITIONS

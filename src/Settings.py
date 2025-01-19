@@ -12,10 +12,12 @@ class Settings(object):
         return cls.instance
 
     def load_settings(self, config):
-        self.WIDTH = int(config.get('screen', 'width'))
-        self.HEIGHT = int(config.get('screen', 'height'))
-        self.FPS = float(config.get('screen', 'fps'))
+        self.WIDTH = config.getint('screen', 'width')
+        self.HEIGHT = config.getint('screen', 'height')
+        self.FPS = config.getint('screen', 'fps')
+
         self.TITLE = "RBMK Reactor Simulation"
+        self.entity_id = 0  # provided to all Entities and incremented
 
 
 GlobalSettings = Settings()
@@ -27,6 +29,6 @@ def init_settings():
     thisfolder = os.path.dirname(os.path.abspath(__file__))
     initfile = os.path.join(thisfolder, config_filename)
 
-    config = configparser.RawConfigParser()
+    config = configparser.ConfigParser()
     config.read(initfile)
     GlobalSettings.load_settings(config)

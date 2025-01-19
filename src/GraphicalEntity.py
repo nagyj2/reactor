@@ -37,8 +37,6 @@ class GraphicalEntity(Entity):
         self.image = image
         self.repr.append(self.image)
 
-        Physics.add_to_sector(self)
-
     def __str__(self):
         return f'{type(self).__name__}(x={self.pos.x},y={self.pos.y})'
 
@@ -65,10 +63,6 @@ class GraphicalEntity(Entity):
     def draw(self):
         if self.enable and self.alive:
             self._draw()
-
-    @static_update_function
-    def _kill(self):
-        Physics.remove_from_sector(self)
 
 
 class PointEntity(GraphicalEntity):
