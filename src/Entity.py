@@ -113,3 +113,10 @@ class Entity:
 
     def kill(self, dt=0):  # dt to allow pyglet to schedule it
         self.alive = False
+
+    def _destroy(self):
+        pass
+
+    def destroy(self):
+        for entity in self.repr:
+            entity.destroy()

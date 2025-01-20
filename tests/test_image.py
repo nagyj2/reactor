@@ -83,6 +83,10 @@ def test_image_set_layer(shape_class):
     assert i['shape2'].primitive.group.order == int(layer)
 
 
+def test_image_destroy():
+    assert False
+
+
 @pytest.mark.parametrize('shape_class', params_shapes)
 def test_simpleimage_creation(shape_class):
     shape = init_shape(shape_class)

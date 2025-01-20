@@ -81,6 +81,9 @@ class Shape:
                 setattr(result, k, deepcopy(v, memo))
         return result
 
+    def delete(self):
+        self.primitive.destroy()
+
     @property
     def color(self):
         return self.primitive.color

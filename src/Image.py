@@ -44,3 +44,7 @@ class Image(Entity):
         for shape in self.shapes:
             # dv = Vector.from_positions(shape.pos, new_pos)
             shape.move_to(new_pos)
+
+    def _destroy(self):
+        for shape in self.shapes:
+            shape.delete()

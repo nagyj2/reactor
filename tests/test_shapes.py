@@ -141,6 +141,10 @@ def test_shape_layer():
     assert s1.primitive.group == shape_back
 
 
+def test_shape_destroy():
+    assert False
+
+
 def validate_circle(circ, ex, ey, eox, eoy, ecolor, eradius):
     assert circ.offset.x == eox
     assert circ.primitive.x == ex
