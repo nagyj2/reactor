@@ -1,12 +1,14 @@
 
 from GraphicalEntity import GraphicalEntity
 from Physics import GlobalPhysics as Physics
+from Physics import PhysicsLib
 from SimpleImage import CircleImage, RectangleImage
 
 
 class SimpleGraphicalEntity(GraphicalEntity):
     def __init__(self, x, y, dx, dy, image, static=False):
         super().__init__(x, y, dx, dy, image, static)
+        self.physics = PhysicsLib.PhysicsType.Simple
 
     @property
     def color(self):
@@ -70,6 +72,8 @@ class RectangleEntity(SimpleGraphicalEntity):
     def __init__(self, x, y, dx, dy, color, w, h, static=False):
         image = RectangleImage(x, y, color, w, h)
         super().__init__(x, y, dx, dy, image, static)
+
+        self.physics = PhysicsLib.PhysicsType.Complex
 
     def __contains__(self, other):
         if isinstance(other, PointEntity):

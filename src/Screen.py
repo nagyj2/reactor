@@ -96,7 +96,7 @@ class Game:
         for e1 in Physics.get_registered_entities():
             # Collisions
             for e2 in Physics.get_neighbour_entities(e1):
-                if id(e1) == id(e2):
+                if e1.id == e2.id:
                     continue
                 if e1 in e2:
                     if type(e2) is Water and not e1.static and not e2.static:
