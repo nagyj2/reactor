@@ -11,6 +11,7 @@ from Physics import GlobalPhysics as Physics
 from Settings import GlobalSettings as Settings
 from Shapes import draw_primitives
 from SimpleGraphicalEntity import PointEntity
+from Thermal import Thermal
 from Water import Water
 
 # todo:
@@ -37,6 +38,10 @@ class Game:
 
         self.DEFAULT_SPEED = 50
 
+        Thermal.register_transfer_coefficient(Water, Moveable, 1)
+        Thermal.register_dissipation_coefficient(Water, 0.15)
+        Thermal.register_dissipation_coefficient(Moveable, 1)
+
         # State variables
         self.tt = 0.0  # track time for printing
         self.iter = 0  # iterations between prints
@@ -62,11 +67,14 @@ class Game:
         self.new_entities = []
         self.cur_entities = [
             TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 3, 1, 3, self.new_entities),
-            # Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
+            Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
             # Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(10, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
             # ControlRod(150, 50, 10, Settings.HEIGHT-150, 10, 0, Settings.WIDTH, 0, Settings.HEIGHT, self.window),
             Moveable(100, 100, self.DEFAULT_SPEED, 5, self.window, tuple())
         ]
+
+        for e in self.cur_entities:
+            Physics.add_to_sector(e)
 
         if Settings.PHYSICS_GRID:
             self.gui.append(ScreenGrid(0, 0, Settings.PHYSICS_DIVISIONS, Settings.PHYSICS_DIVISIONS, 3, (32, 32, 32)))
@@ -88,15 +96,18 @@ class Game:
         for e1 in Physics.get_registered_entities():
             # Collisions
             for e2 in Physics.get_neighbour_entities(e1):
+                if id(e1) == id(e2):
+                    continue
                 if e1 in e2:
-                    if id(e1) == id(e2):
-                        continue
-                    if type(e2) is Water and e1 in e2 and not e1.static and not e2.static:
+                    if type(e2) is Water and not e1.static and not e2.static:
                         e1.pos -= e1.vel * dt
                         if e2.left_x < e1.pos.x < e2.right_x:  # if top/bottom or left/right reflection
                             e1.vel.y *= -1
                         else:
                             e1.vel.x *= -1
+
+                    if type(e1) is Water and type(e2) is Moveable:
+                        e1.thermal.transfer(e2.thermal, dt)
 
             # Static Events
             if type(e1) is PointEntity \
