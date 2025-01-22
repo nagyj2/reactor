@@ -1,7 +1,7 @@
 
 from .atom import Atom  # noqa: F401
 from .component_controller import BasicController, Controller  # noqa: F401
-from .component_emitter import (Emissive, Emitter, Radioactivity,  # noqa: F401
+from .component_emitter import (Emitter, Radioactivity,  # noqa: F401
                                 TestEmitter)
 from .component_thermal import Thermal  # noqa: F401
 from .entity import Entity  # noqa: F401

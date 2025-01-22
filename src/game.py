@@ -63,7 +63,7 @@ class Game:
         self.gui = []
         self.new_entities = []
         self.cur_entities = [
-            # TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 3, 1, 3, self.new_entities),
+            TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 3, self.new_entities, 5),
             Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
             # Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(10, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
             # ControlRod(150, 50, 10, Settings.HEIGHT-150, 10, 0, Settings.WIDTH, 0, Settings.HEIGHT, self.window),
@@ -132,6 +132,8 @@ class Game:
         # for e in list(filter(lambda e: e.alive is False, entities)):  # fix: kills objects it shouldnt
         #     entities.remove(e)
         self.cur_entities.extend(self.new_entities)
+        for e in self.new_entities:  # fix not all entities being physics entities
+            Physics.add_to_sector(e)
         self.new_entities.clear()  # fed into other objects so must maintain reference
 
     def start_game(self):
