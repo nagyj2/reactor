@@ -1,0 +1,18 @@
+[project]
+name = "Reactor"
+version = "0.0.1"
+requires-python = ">= 3.12"
+dependencies = [
+  "pyglet >= 2.0.8"
+]
+authors = [
+  {name = "Jason Nagy", email = "nagyj2@mcmaster.ca"}
+]
+description = "Simulation of a RBMK reactor using Python and Pyglet."
+readme = "readme.md"
+keywords = ["simulation", "pyglet"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
