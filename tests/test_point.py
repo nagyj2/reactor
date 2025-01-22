@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-from Geometry import EPSILON, Point, Vector
+from geometry import EPSILON, Point, Vector
 
 # todo:
 # get dependencies working

@@ -2,10 +2,7 @@ from copy import copy, deepcopy
 
 import pytest
 
-from Entity import Entity
-from Settings import init_settings
-
-init_settings(default=True)
+from entities import Entity
 
 
 class TestEntity(Entity):  # test class to be copyable, comparable and contains state

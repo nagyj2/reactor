@@ -5,7 +5,7 @@ import sys
 
 import pytest
 
-from Geometry import EPSILON, Point, Vector
+from geometry import EPSILON, Point, Vector
 
 params_coord_w_offset = [
     (1, 2, 1, 0),

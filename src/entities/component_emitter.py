@@ -2,20 +2,17 @@
 import random
 from typing import Callable
 
-from Entity import Entity
-from Geometry import Vector
-from Physics import GlobalPhysics as Physics
-from Shapes import Layer
-from SimpleGraphicalEntity import PointEntity
+from geometry import Vector
+from image import Layer
+from util import Physics
+
+from .entity import Entity
+from .entity_simple_shapes import PointEntity
 
 # todo:
 # use __deepcopy__?
 # correct get_per_frame_chance
 # make nicer way add physics to particles
-
-
-def get_per_frame_chance(chance_per_second, frames_per_second):
-    return chance_per_second / frames_per_second
 
 
 class Emitter(Entity):

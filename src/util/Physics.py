@@ -3,7 +3,7 @@ import enum
 import itertools
 import math
 
-from Settings import GlobalSettings as Settings
+from .settings import GlobalSettings as Settings
 
 # todo:
 # shapes can occupy multiple sectors

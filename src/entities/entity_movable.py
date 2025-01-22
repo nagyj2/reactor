@@ -1,8 +1,9 @@
 
-from Controller import BasicController
-from Shapes import Layer
-from SimpleGraphicalEntity import CircleEntity
-from Thermal import Thermal
+from image import Layer
+
+from .component_controller import BasicController
+from .component_thermal import Thermal
+from .entity_simple_shapes import CircleEntity
 
 GREEN = (0, 255, 0, 128)
 

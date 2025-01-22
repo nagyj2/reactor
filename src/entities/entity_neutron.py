@@ -1,6 +1,7 @@
 
-from Shapes import Layer
-from SimpleGraphicalEntity import PointEntity
+from image import Layer
+
+from .entity_simple_shapes import PointEntity
 
 # todo:
 # add fast variant (rquires moderation to slow)

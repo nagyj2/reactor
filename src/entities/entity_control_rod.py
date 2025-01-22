@@ -1,9 +1,10 @@
 
 from pyglet.window import key
 
-from Controller import Controller, KeyEvent, KeyMap
-from Shapes import Layer
-from SimpleGraphicalEntity import RectangleEntity
+from image import Layer
+
+from .component_controller import Controller, KeyEvent, KeyMap
+from .entity_simple_shapes import RectangleEntity
 
 # Todo:
 # Better way to handle vel reset w/ controller

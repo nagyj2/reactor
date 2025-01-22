@@ -3,14 +3,9 @@
 
 import pyglet
 
-from Atom import Atom
-from ControlRod import ControlRod
-from Emitter import get_per_frame_chance
-from Moveable import Moveable
-from Neutron import Neutron
-from Settings import init_settings
-from Shapes import draw_primitives
-from Water import Water
+from entities import (Atom, ControlRod, Moveable, Neutron,  # noqa: F401
+                      TestEmitter, Thermal, Water)
+from image import draw_primitives
 
 # may be needed on MacOS to prevent screen from having issues due to high DPI
 pyglet.options.dpi_scaling = 'stretch'
@@ -20,8 +15,11 @@ WIDTH, HEIGHT = 640, 480
 FPS = 60
 
 
+def get_per_frame_chance(chance, fps):
+    return chance / fps
+
+
 if __name__ == '__main__':
-    init_settings()
     window = pyglet.window.Window(width=WIDTH, height=HEIGHT, caption=TITLE)
 
     SPEED = 50

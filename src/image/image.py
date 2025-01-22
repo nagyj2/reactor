@@ -1,6 +1,4 @@
 
-from Entity import Entity
-
 # todo:
 # implement deepcopy
 # change Image to be a graphical entity and then simple/complex shapes
@@ -10,7 +8,7 @@ from Entity import Entity
 # add guards
 
 
-class Image(Entity):
+class Image:
     def __init__(self, bx, by):
         super().__init__()
 

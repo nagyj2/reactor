@@ -2,16 +2,14 @@ from copy import deepcopy
 
 import pytest
 
-from ComplexImage import ComplexImage
-from Image import Image
-from Settings import init_settings
-from Shapes import Circle, Layer, Rectangle
-from SimpleImage import CircleImage, RectangleImage, SimpleImage
+from image import CircleImage, RectangleImage
+from image.image import Image
+from image.image_complex import ComplexImage
+from image.image_simple import SimpleImage
+from image.shapes import Circle, Layer, Rectangle
 
 # todo:
 
-
-init_settings(default=True)
 
 params_shapes = [
     Circle,

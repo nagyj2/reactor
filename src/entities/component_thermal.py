@@ -1,5 +1,5 @@
 
-from Entity import Entity
+from .entity import Entity
 
 
 # @dataclass

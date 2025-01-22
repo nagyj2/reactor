@@ -1,7 +1,8 @@
 
-from Shapes import Layer
-from SimpleGraphicalEntity import RectangleEntity
-from Thermal import Thermal
+from image import Layer
+
+from .component_thermal import Thermal
+from .entity_simple_shapes import RectangleEntity
 
 # todo:
 # add moderator ability

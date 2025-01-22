@@ -1,22 +1,7 @@
+from image import CircleImage, RectangleImage
+from util import Physics
 
-from GraphicalEntity import GraphicalEntity
-from Physics import GlobalPhysics as Physics
-from Physics import PhysicsLib
-from SimpleImage import CircleImage, RectangleImage
-
-
-class SimpleGraphicalEntity(GraphicalEntity):
-    def __init__(self, x, y, dx, dy, image, static=False):
-        super().__init__(x, y, dx, dy, image, static)
-        self.physics = PhysicsLib.PhysicsType.Simple
-
-    @property
-    def color(self):
-        return self.image.color
-
-    @color.setter
-    def color(self, color):
-        self.image.color = color
+from .graphical_entity_simple import SimpleGraphicalEntity
 
 
 class PointEntity(SimpleGraphicalEntity):
@@ -73,7 +58,7 @@ class RectangleEntity(SimpleGraphicalEntity):
         image = RectangleImage(x, y, color, w, h)
         super().__init__(x, y, dx, dy, image, static)
 
-        self.physics = PhysicsLib.PhysicsType.Complex
+        self.physics = Physics.PhysicsType.Complex
 
     def __contains__(self, other):
         if isinstance(other, PointEntity):

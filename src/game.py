@@ -1,21 +1,18 @@
 
 import pyglet
 
-from Atom import Atom
-from ComplexImage import ScreenGrid
-from ControlRod import ControlRod
-from Emitter import TestEmitter, get_per_frame_chance
-from Moveable import Moveable
-from Neutron import Neutron
-from Physics import GlobalPhysics as Physics
-from Settings import GlobalSettings as Settings
-from Shapes import draw_primitives
-from SimpleGraphicalEntity import PointEntity
-from Thermal import Thermal
-from Water import Water
+from entities import (Atom, ControlRod, Moveable, Neutron,  # noqa: F401
+                      PointEntity, TestEmitter, Thermal, Water)
+from image import ScreenGrid, draw_primitives
+from util import Physics, Settings
+
+
+def get_per_frame_chance(chance_per_second, frames_per_second):
+    return chance_per_second / frames_per_second
 
 # todo:
 # add static to graphical entities
+
 
 pyglet.options.dpi_scaling = 'stretch'
 
@@ -66,7 +63,7 @@ class Game:
         self.gui = []
         self.new_entities = []
         self.cur_entities = [
-            TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 3, 1, 3, self.new_entities),
+            # TestEmitter(Settings.WIDTH/2, Settings.HEIGHT/2, 3, 1, 3, self.new_entities),
             Water(Settings.WIDTH/2, 0, Settings.WIDTH/2, Settings.HEIGHT/2),
             # Atom(Settings.WIDTH/2, Settings.HEIGHT/2, 0, 0, 10, 3, get_per_frame_chance(10, Settings.FPS), Neutron(0, 0, self.DEFAULT_SPEED, 0, 3), self.new_entities),  # noqa: E501)
             # ControlRod(150, 50, 10, Settings.HEIGHT-150, 10, 0, Settings.WIDTH, 0, Settings.HEIGHT, self.window),

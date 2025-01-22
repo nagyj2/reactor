@@ -2,7 +2,7 @@
 # import abc
 from copy import deepcopy
 
-from Settings import GlobalSettings as Settings
+from util import Settings
 
 # Todo:
 # add entity disable and corresponding toggle

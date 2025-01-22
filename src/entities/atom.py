@@ -1,7 +1,8 @@
 
-from Emitter import Radioactivity
-from Shapes import Layer
-from SimpleGraphicalEntity import CircleEntity
+from image import Layer
+
+from .component_emitter import Radioactivity
+from .entity_simple_shapes import CircleEntity
 
 # todo:
 # radioactivity

@@ -3,15 +3,13 @@ from copy import copy, deepcopy
 import pyglet
 import pytest
 
-from Settings import init_settings
-from Shapes import (Circle, Layer, Rectangle, Shape, shape_back,
-                    shape_background, shape_foreground, shape_front,
-                    shape_midground)
+from image.shapes import Circle, Layer, Rectangle
+from image.shapes.shapes import (Shape, shape_back, shape_background,
+                                 shape_foreground, shape_front,
+                                 shape_midground)
 
 # todo:
 # add parameterization
-
-init_settings(default=True)
 
 
 def create_pyglet_shape_sample(x, y, color):

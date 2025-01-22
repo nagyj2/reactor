@@ -1,16 +1,8 @@
 
-from Image import Image
-from Settings import GlobalSettings as Settings
-from Shapes import Layer, Rectangle
+from util import Settings
 
-
-class ComplexImage(Image):
-    def __init__(self, bx, by):
-        super().__init__(bx, by)
-        self._construct()
-
-    def _construct(self):
-        pass
+from .image_complex import ComplexImage
+from .shapes import Layer, Rectangle
 
 
 class ScreenGrid(ComplexImage):

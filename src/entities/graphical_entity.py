@@ -2,8 +2,9 @@
 from copy import copy
 from functools import wraps
 
-from Entity import Entity
-from Geometry import Point, Vector
+from geometry import Point, Vector
+
+from .entity import Entity
 
 # todo:
 # Performance test

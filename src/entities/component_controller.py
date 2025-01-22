@@ -3,7 +3,7 @@ import enum
 
 from pyglet.window import key as pgkey
 
-from Entity import Entity
+from .entity import Entity
 
 # Todo:
 
