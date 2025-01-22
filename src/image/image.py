@@ -34,6 +34,10 @@ class Image:
     def shapes(self):
         return tuple(v for k, v in self._named_shapes.items())
 
+    @property
+    def _shapes(self):
+        return self._named_shapes.items()
+
     def set_layer(self, layer):
         for shape in self.shapes:
             shape.layer = layer

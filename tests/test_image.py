@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from image import CircleImage, RectangleImage
+from image import CircleImage, RectangleImage, ScreenGrid
 from image.image import Image
 from image.image_complex import ComplexImage
 from image.image_simple import SimpleImage
@@ -152,3 +152,28 @@ def test_rectangleimage_set_get_radius():
 def test_compleximage_creation():
     i = ComplexImage(0, 0)
     assert len(i.shapes) == 0
+
+
+def test_screengrid_creation():
+    sx, sy = 4, 4
+    t, c = 3, (255, 255, 255, 255)
+    i = ScreenGrid(0, 0, sx, sy, t, c)
+    assert len(i.shapes) == sx + sy
+    assert i.thickness == t
+    assert i.color == c
+
+
+def test_screengrid_assignment():
+    sx, sy = 4, 4
+    t, c = 3, (255, 255, 255, 255)
+    i = ScreenGrid(0, 0, sx, sy, t, c)
+    for shape in i.shapes:
+        assert shape.primitive.color == c
+        assert shape.primitive.width == t or shape.primitive.height == t
+    c = (255, 128, 64, 32)
+    t = 6
+    i.color = c
+    i.thickness = t
+    for shape in i.shapes:
+        assert shape.primitive.color == c
+        assert shape.primitive.width == t or shape.primitive.height == t
